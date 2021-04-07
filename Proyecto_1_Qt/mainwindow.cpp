@@ -13,3 +13,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_clearButton_clicked()
+{
+    ui->aplicationLogConsole->clear();
+}
