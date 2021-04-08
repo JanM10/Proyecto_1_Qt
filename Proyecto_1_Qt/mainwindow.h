@@ -4,8 +4,12 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
+
+class LocalServer;
 
 class MainWindow : public QMainWindow
 {
@@ -20,7 +24,10 @@ private slots:
 
     void on_runButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+    LocalServer *mLocalServer;
 };
 #endif // MAINWINDOW_H

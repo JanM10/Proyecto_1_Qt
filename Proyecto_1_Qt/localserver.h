@@ -1,15 +1,19 @@
 #ifndef LOCALSERVER_H
 #define LOCALSERVER_H
 
-#include <QObject>
+#include <QLocalServer>
 
-class LocalServer : public QObject
+class QLocalSocket;
+
+class LocalServer : public QLocalServer
 {
     Q_OBJECT
 public:
-    explicit LocalServer(QObject *parent = nullptr);
+    explicit LocalServer(QObject *parent = 0);
+    void envia(const QString &msj);
 
-signals:
+private:
+    QLocalSocket *mSocket;
 
 };
 
