@@ -18,3 +18,8 @@ void MainWindow::on_clearButton_clicked()
 {
     ui->aplicationLogConsole->clear();
 }
+
+void MainWindow::on_runButton_clicked()
+{
+
+}
