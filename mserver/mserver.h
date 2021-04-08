@@ -4,8 +4,12 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class mserver; }
+namespace Ui {
+class mserver;
+}
 QT_END_NAMESPACE
+
+class QLocalSocket;
 
 class mserver : public QMainWindow
 {
@@ -15,7 +19,13 @@ public:
     mserver(QWidget *parent = nullptr);
     ~mserver();
 
+private slots:
+    void on_conectButton_clicked();
+
+    void on_quitButton_clicked();
+
 private:
     Ui::mserver *ui;
+    QLocalSocket *mSocket;
 };
 #endif // MSERVER_H
