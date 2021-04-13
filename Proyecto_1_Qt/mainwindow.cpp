@@ -9,6 +9,7 @@
 using namespace std;
 
 QStringList lines;
+int numero = 1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,7 +53,13 @@ void MainWindow::on_writeCode_textChanged()
 
     if(ui->writeCode->toPlainText().contains("\n")){
         lines = ui->writeCode->toPlainText().split("\n");
-//        cout<<lines.size()<<endl;
+    }
+    int j = 0;
+    QString lineas = "";
+    while(j<ui->writeCode->toPlainText().count("\n")+1){
+        j++;
+        lineas += QString::number(j) + "\n";
+        ui->numeroLinea->setText(lineas);
     }
 
     QString texto = "";
