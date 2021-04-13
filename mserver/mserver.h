@@ -17,7 +17,6 @@ class mserver : public QMainWindow
 
 public:
     mserver(QWidget *parent = nullptr);
-    ~mserver();
 
 private slots:
     void on_conectButton_clicked();

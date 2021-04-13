@@ -14,17 +14,14 @@ mserver::mserver(QWidget *parent)
         QTextStream T(mSocket);
         ui->listWidget->addItem(T.readAll());
     });
-}
 
-mserver::~mserver()
-{
-    delete ui;
+    mSocket->connectToServer("MiServidorLocal");
 }
 
 
 void mserver::on_conectButton_clicked()
 {
-    mSocket->connectToServer("MiServidorLocal");
+
 }
 
 void mserver::on_quitButton_clicked()
