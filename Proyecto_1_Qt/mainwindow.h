@@ -27,6 +27,8 @@ private slots:
 
     void on_writeCode_textChanged();
 
+    void on_iniciarServidor_clicked();
+
 private:
     Ui::MainWindow *ui;
     LocalServer *mLocalServer;
