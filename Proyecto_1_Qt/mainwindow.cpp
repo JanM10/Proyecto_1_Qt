@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <regex>
 
 using namespace std;
 
@@ -61,6 +62,7 @@ void MainWindow::on_writeCode_textChanged()
     }
 
     QString texto = "";
+    string textoCortado = "";
     int cantidadInt = 0;
     int cantidadLong = 0;
     int cantidadChar = 0;
@@ -68,31 +70,50 @@ void MainWindow::on_writeCode_textChanged()
     int cantidadDouble = 0;
     int cantidadStruct = 0;
 
+    QList<int> integerList;
+    QList<string> stringList;
+
     for(int i=0; i<lines.size()-1; i++){
-        texto += lines[i] + "\n";
-        if(lines[i].contains("int")){
-            cantidadInt++;
-            cout<<"CONTIENE "<<cantidadInt<<" de Ints"<<endl;
-        }else if(lines[i].contains("long")){
-            cantidadLong++;
-            cout<<"CONTIENE "<<cantidadLong<<" de Longs"<<endl;
-        }else if(lines[i].contains("char")){
-            cantidadChar++;
-            cout<<"CONTIENE "<<cantidadChar<<" de Chars"<<endl;
-        }else if(lines[i].contains("float")){
-            cantidadFloat++;
-            cout<<"CONTIENE "<<cantidadFloat<<" de Floats"<<endl;
-        }else if(lines[i].contains("double")){
-            cantidadDouble++;
-            cout<<"CONTIENE "<<cantidadDouble<<" de Doubles"<<endl;
-        }else if(lines[i].contains("struct")){
-            cantidadStruct++;
-            cout<<"CONTIENE "<<cantidadStruct<<" de Structs"<<endl;
-        }
-        else{
-            cout<<"NO CONTIENE INT"<<endl;
-        }
+        textoCortado = lines[i].remove(QString(" "), Qt::CaseInsensitive).toStdString();
+        cout<< textoCortado << endl;
     }
+
+//    for(int i=0; i<lines.size()-1; i++){
+//        texto += lines[i] + "\n";
+//        if(lines[i].contains("int")){
+//            textoCortado = lines[i].remove(QString("int "), Qt::CaseInsensitive).toStdString();
+//            cout<< textoCortado << endl;
+//            textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
+//            cout<< textoCortado << endl;
+//            textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
+//            cout<< textoCortado << endl;
+//            textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 1);
+//            cout<< textoCortado << endl;
+////            x.substr(x.find(":") + 1);
+//        }
+//        if(lines[i].contains("int")){
+//            cantidadInt++;
+//            cout<<"CONTIENE "<<cantidadInt<<" de Ints"<<endl;
+//        }else if(lines[i].contains("long")){
+//            cantidadLong++;
+//            cout<<"CONTIENE "<<cantidadLong<<" de Longs"<<endl;
+//        }else if(lines[i].contains("char")){
+//            cantidadChar++;
+//            cout<<"CONTIENE "<<cantidadChar<<" de Chars"<<endl;
+//        }else if(lines[i].contains("float")){
+//            cantidadFloat++;
+//            cout<<"CONTIENE "<<cantidadFloat<<" de Floats"<<endl;
+//        }else if(lines[i].contains("double")){
+//            cantidadDouble++;
+//            cout<<"CONTIENE "<<cantidadDouble<<" de Doubles"<<endl;
+//        }else if(lines[i].contains("struct")){
+//            cantidadStruct++;
+//            cout<<"CONTIENE "<<cantidadStruct<<" de Structs"<<endl;
+//        }
+//        else{
+//            cout<<"NO CONTIENE INT"<<endl;
+//        }
+//    }
     ui->console->setText(texto);
     lines.clear();
 }
