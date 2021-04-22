@@ -6,10 +6,10 @@
 #include <string>
 #include <sstream>
 #include <regex>
-#include <list>
 
 
 using namespace std;
+using namespace regex_constants;
 
 QStringList lines;
 int numero = 1;
@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::critical(this, "Error", mLocalServer->errorString());
     }
     else{
-        QMessageBox::information(this, "Servidor","Iniciando...");
+//        QMessageBox::information(this, "Servidor","Iniciando...");
+        cout << "Servidor Iniciado" << endl;
     }
 }
 
@@ -65,34 +66,24 @@ void MainWindow::on_writeCode_textChanged()
 
     QString texto = "";
     string textoCortado = "";
+    cmatch resultados;
 
-//    for(int i=0; i<lines.size()-1; i++){
-////        textoCortado = lines[i].remove(QString(" "), Qt::CaseInsensitive).toStdString();
-////        cout<< textoCortado << endl;
-//        textoCortado = lines[1].toStdString();
-//        const regex patron("[a-z]");
-//        cout<<"REDEX: " <<regex << endl;
-//    }
+    smatch results;
+    regex patron("[a-zA-Z]+");
+    sregex_iterator lastmatch;
 
     for(int i=0; i<lines.size()-1; i++){
-        texto += lines[i] + "\n";
-        if(lines[i].contains("int")){
-            textoCortado = lines[i].remove(QString("int "), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
-            cout<< "SUB:"<<textoCortado << endl;
-            textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
-            cout<< "SUB2:"<<textoCortado << endl;
-//            x.substr(x.find(":") + 1);
+        textoCortado = lines[i].toStdString();
+//        regex_match(textoCortado, results, patron);
+        sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),patron);
+        while (currentMatch != lastmatch) {
+            smatch match = *currentMatch;
+            cout << "MATCHES: "<<match.str() << endl;
+            currentMatch++;
         }
+
+        cout<<"TextoCortado: " << textoCortado << endl;
     }
     ui->console->setText(texto);
     lines.clear();
 }
-
-//    ui->console->setText(lines.count());
-//    QStringList lines = ui->writeCode->toPlainText().split("\n");
