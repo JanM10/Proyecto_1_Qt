@@ -36,11 +36,6 @@ void MainWindow::on_clearButton_clicked()
     ui->aplicationLogConsole->clear();
 }
 
-void MainWindow::on_iniciarServidor_clicked()
-{
-    mLocalServer->listen("MiServidorLocal");
-}
-
 void MainWindow::on_runButton_clicked()
 {
     mLocalServer->envia(ui->writeCode->toPlainText());
@@ -63,27 +58,100 @@ void MainWindow::on_writeCode_textChanged()
         lineas += QString::number(j) + "\n";
         ui->numeroLinea->setText(lineas);
     }
-
     QString texto = "";
-    string textoCortado = "";
-    cmatch resultados;
 
-    smatch results;
-    regex patron("[a-zA-Z]+");
-    sregex_iterator lastmatch;
+    separarTexto();
 
-    for(int i=0; i<lines.size()-1; i++){
-        textoCortado = lines[i].toStdString();
-//        regex_match(textoCortado, results, patron);
-        sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),patron);
-        while (currentMatch != lastmatch) {
-            smatch match = *currentMatch;
-            cout << "MATCHES: "<<match.str() << endl;
-            currentMatch++;
-        }
-
-        cout<<"TextoCortado: " << textoCortado << endl;
-    }
     ui->console->setText(texto);
     lines.clear();
 }
+
+void MainWindow::separarTexto( ){
+    string textoCortado = "";
+    smatch results;
+    regex soloLetras("[a-zA-Z]+");
+    regex numerosLetras("\\w+");
+    regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
+    sregex_iterator lastmatch;
+
+    //lines[i].contains("struct")
+    //lines[i].contains("reference<tipo>")
+
+    for(int i=0; i<lines.size()-1; i++){
+        textoCortado = lines[i].toStdString();
+
+        if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
+            sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),soloLetras);
+            while (currentMatch != lastmatch) {
+                smatch match = *currentMatch;
+                cout << "MATCHES: "<<match.str() << endl;
+                currentMatch++;
+            }
+            sregex_iterator currentSecondMatch(textoCortado.begin(),textoCortado.end(),numerosFloat);
+            while (currentSecondMatch != lastmatch) {
+                smatch match = *currentSecondMatch;
+                cout << "MATCHES: "<<match.str() << endl;
+                currentSecondMatch++;
+            }
+        }
+//        else if (lines[i].contains("float") || lines[i].contains("double")) {
+//            sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),soloLetras);
+//            while (currentMatch != lastmatch) {
+//                smatch match = *currentMatch;
+//                cout << "MATCHES: "<<match.str() << endl;
+//                currentMatch++;
+//            }
+//            sregex_iterator currentSecondMatch(textoCortado.begin(),textoCortado.end(),numerosFloat);
+//            while (currentSecondMatch != lastmatch) {
+//                smatch match = *currentSecondMatch;
+//                cout << "MATCHES: "<<match.str() << endl;
+//                currentSecondMatch++;
+//            }
+//        }
+    else if (lines[i].contains("char")) {
+            textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
+            cout<< textoCortado << endl;
+            textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
+            cout<< textoCortado << endl;
+            textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
+            cout<< textoCortado << endl;
+            textoCortado = lines[i].remove(QString('"'), Qt::CaseInsensitive).toStdString();
+            cout<< textoCortado << endl;
+            textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
+            cout<< "SUB:"<<textoCortado << endl;
+            textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
+            cout<< "SUB2:"<<textoCortado << endl;
+        }
+        cout<<"TextoCortado: " << textoCortado << endl;
+    }
+}
+
+//void shallowCopy(){
+//    int value = 5;
+//    int *pointer = &value;
+//    int *pointer2 = &value;
+
+//    cout << "pointer:" << pointer << " -- pointer2:" << pointer2 << '\n';
+//    cout << "pointer:" << *pointer << " -- pointer2:" << *pointer2 << '\n';
+//}
+
+/*void demo::deepCopy(){
+    demo obj1;
+    obj1.getdata(10,20,30);
+    obj1.showdata();
+    demo obj2 = obj1;
+    obj2.showdata();
+}
+*/
+
+/*
+sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),numerosLetras);
+while (currentMatch != lastmatch) {
+    smatch match = *currentMatch;
+    cout << "MATCHES: "<<match.str() << endl;
+    currentMatch++;
+    if(currentMatch == lastmatch){
+        cout << "ESTE ES EL: "<< match.str() << endl;
+    }
+}
+*/

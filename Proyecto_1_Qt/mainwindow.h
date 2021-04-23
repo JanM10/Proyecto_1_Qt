@@ -23,11 +23,11 @@ private slots:
 
     void on_runButton_clicked();
 
-    void on_pushButton_clicked();
+//    void on_pushButton_clicked();
 
     void on_writeCode_textChanged();
 
-    void on_iniciarServidor_clicked();
+    void separarTexto();
 
 private:
     Ui::MainWindow *ui;
