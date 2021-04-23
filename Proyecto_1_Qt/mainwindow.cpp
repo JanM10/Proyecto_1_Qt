@@ -6,13 +6,16 @@
 #include <string>
 #include <sstream>
 #include <regex>
+#include "json.hpp"
 
 
 using namespace std;
 using namespace regex_constants;
+using json = nlohmann::json;
 
 QStringList lines;
 int numero = 1;
+json listaJSON;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -74,6 +77,12 @@ void MainWindow::separarTexto( ){
     regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
     sregex_iterator lastmatch;
 
+    listaJSON["Direccion de Memoria"] = {};
+    listaJSON["Nombre de la variable"] = {};
+    listaJSON["Valor de la variable"] = {};
+    listaJSON["Bytes del tipo de dato"] = {};
+
+
     //lines[i].contains("struct")
     //lines[i].contains("reference<tipo>")
 
@@ -90,24 +99,16 @@ void MainWindow::separarTexto( ){
             sregex_iterator currentSecondMatch(textoCortado.begin(),textoCortado.end(),numerosFloat);
             while (currentSecondMatch != lastmatch) {
                 smatch match = *currentSecondMatch;
+
+                listaJSON["Valor de la variable"] += match.str();
+                string getJSON = listaJSON.dump();
+                cout << "JSON: " << getJSON << endl;
+
                 cout << "MATCHES: "<<match.str() << endl;
                 currentSecondMatch++;
             }
         }
-//        else if (lines[i].contains("float") || lines[i].contains("double")) {
-//            sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),soloLetras);
-//            while (currentMatch != lastmatch) {
-//                smatch match = *currentMatch;
-//                cout << "MATCHES: "<<match.str() << endl;
-//                currentMatch++;
-//            }
-//            sregex_iterator currentSecondMatch(textoCortado.begin(),textoCortado.end(),numerosFloat);
-//            while (currentSecondMatch != lastmatch) {
-//                smatch match = *currentSecondMatch;
-//                cout << "MATCHES: "<<match.str() << endl;
-//                currentSecondMatch++;
-//            }
-//        }
+
     else if (lines[i].contains("char")) {
             textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
             cout<< textoCortado << endl;
