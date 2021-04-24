@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <regex>
+#include <string>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,6 +30,10 @@ private slots:
     void on_writeCode_textChanged();
 
     void separarTexto();
+
+    void printMatches(std::string str, std::regex reg);
+
+    void printCharMatches(std::string str, std::regex reg);
 
 private:
     Ui::MainWindow *ui;

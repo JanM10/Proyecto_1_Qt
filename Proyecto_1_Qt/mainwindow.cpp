@@ -75,13 +75,13 @@ void MainWindow::separarTexto( ){
     regex soloLetras("[a-zA-Z]+");
     regex numerosLetras("\\w+");
     regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
+    regex igualDespues("^\\w+( +\\w+)*$");
     sregex_iterator lastmatch;
 
     listaJSON["Direccion de Memoria"] = {};
+    listaJSON["Bytes del tipo de dato"] = {};
     listaJSON["Nombre de la variable"] = {};
     listaJSON["Valor de la variable"] = {};
-    listaJSON["Bytes del tipo de dato"] = {};
-
 
     //lines[i].contains("struct")
     //lines[i].contains("reference<tipo>")
@@ -90,27 +90,12 @@ void MainWindow::separarTexto( ){
         textoCortado = lines[i].toStdString();
 
         if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
-            sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),soloLetras);
-            while (currentMatch != lastmatch) {
-                smatch match = *currentMatch;
-                cout << "MATCHES: "<<match.str() << endl;
-                currentMatch++;
-            }
-            sregex_iterator currentSecondMatch(textoCortado.begin(),textoCortado.end(),numerosFloat);
-            while (currentSecondMatch != lastmatch) {
-                smatch match = *currentSecondMatch;
-
-                listaJSON["Valor de la variable"] += match.str();
-                string getJSON = listaJSON.dump();
-                cout << "JSON: " << getJSON << endl;
-
-                cout << "MATCHES: "<<match.str() << endl;
-                currentSecondMatch++;
-            }
+            printMatches(textoCortado, numerosLetras);
         }
-
-    else if (lines[i].contains("char")) {
+        else if (lines[i].contains("char")) {
+//            printMatches(textoCortado,igualDespues);
             textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
+            listaJSON["Bytes del tipo de dato"] += "char";
             cout<< textoCortado << endl;
             textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
             cout<< textoCortado << endl;
@@ -119,12 +104,54 @@ void MainWindow::separarTexto( ){
             textoCortado = lines[i].remove(QString('"'), Qt::CaseInsensitive).toStdString();
             cout<< textoCortado << endl;
             textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
+            listaJSON["Nombre de la variable"] += textoCortado;
             cout<< "SUB:"<<textoCortado << endl;
             textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
+            listaJSON["Valor de la variable"] += textoCortado;
             cout<< "SUB2:"<<textoCortado << endl;
         }
+        string getJSON = listaJSON.dump();
+        cout << "JSON: " << getJSON << endl;
         cout<<"TextoCortado: " << textoCortado << endl;
     }
+}
+
+void MainWindow::printMatches(string str, regex reg){
+    smatch matches;
+    int i = 0;
+    while (regex_search(str,matches,reg)){
+        if(i == 0){
+            cout<<matches.str(0) << endl;
+            listaJSON["Bytes del tipo de dato"] += matches.str(0);
+            str = matches.suffix().str();
+        }else if(i == 1){
+            cout<<matches.str(0) << endl;
+            listaJSON["Nombre de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }else{
+            cout<<matches.str(0) << endl;
+            listaJSON["Valor de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        i++;
+    }
+    string getJSON = listaJSON.dump();
+    cout << "JSON: " << getJSON << endl;
+}
+
+void MainWindow::printCharMatches(std::string str, std::regex reg){
+//    textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
+//    cout<< textoCortado << endl;
+//    textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
+//    cout<< textoCortado << endl;
+//    textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
+//    cout<< textoCortado << endl;
+//    textoCortado = lines[i].remove(QString('"'), Qt::CaseInsensitive).toStdString();
+//    cout<< textoCortado << endl;
+//    textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
+//    cout<< "SUB:"<<textoCortado << endl;
+//    textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
+//    cout<< "SUB2:"<<textoCortado << endl;
 }
 
 //void shallowCopy(){
