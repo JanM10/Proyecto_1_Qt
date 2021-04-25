@@ -73,8 +73,7 @@ void MainWindow::separarTexto( ){
     string textoCortado = "";
     smatch results;
     regex soloLetras("[a-zA-Z]+");
-    regex numerosLetras("\\w+");
-    regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
+    regex prueba("^([a-zA-Z]+)(?=.)([+-]?([0-9]*)(\\.([0-9]+))?)$");
     regex igualDespues("^\\w+( +\\w+)*$");
     sregex_iterator lastmatch;
 
@@ -90,7 +89,7 @@ void MainWindow::separarTexto( ){
         textoCortado = lines[i].toStdString();
 
         if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
-            printMatches(textoCortado, numerosLetras);
+            printIntFloatMatches(textoCortado);
         }
         else if (lines[i].contains("char")) {
 //            printMatches(textoCortado,igualDespues);
@@ -110,25 +109,38 @@ void MainWindow::separarTexto( ){
             listaJSON["Valor de la variable"] += textoCortado;
             cout<< "SUB2:"<<textoCortado << endl;
         }
-        string getJSON = listaJSON.dump();
-        cout << "JSON: " << getJSON << endl;
+//        string getJSON = listaJSON.dump();
+//        cout << "JSON: " << getJSON << endl;
+        string dataJson = listaJSON.dump();
+        cout<<dataJson<<endl;
+
+        json newJson = json::parse(dataJson);
+        cout<<newJson["Nombre de la variable"]<<endl;
         cout<<"TextoCortado: " << textoCortado << endl;
     }
 }
 
-void MainWindow::printMatches(string str, regex reg){
+void MainWindow::printIntFloatMatches(string str){
     smatch matches;
+    regex numerosLetras("\\w+");
+    regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
     int i = 0;
-    while (regex_search(str,matches,reg)){
+
+    while (i<3){
         if(i == 0){
+            regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSON["Bytes del tipo de dato"] += matches.str(0);
             str = matches.suffix().str();
-        }else if(i == 1){
+        }
+        else if(i == 1){
+            regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSON["Nombre de la variable"] += matches.str(0);
             str = matches.suffix().str();
-        }else{
+        }
+        else{
+            regex_search(str,matches,numerosFloat);
             cout<<matches.str(0) << endl;
             listaJSON["Valor de la variable"] += matches.str(0);
             str = matches.suffix().str();
@@ -172,14 +184,7 @@ void MainWindow::printCharMatches(std::string str, std::regex reg){
 }
 */
 
-/*
-sregex_iterator currentMatch(textoCortado.begin(),textoCortado.end(),numerosLetras);
-while (currentMatch != lastmatch) {
-    smatch match = *currentMatch;
-    cout << "MATCHES: "<<match.str() << endl;
-    currentMatch++;
-    if(currentMatch == lastmatch){
-        cout << "ESTE ES EL: "<< match.str() << endl;
-    }
+void MainWindow::on_debugButton_clicked()
+{
+    cout<< "EL BOTON FUNCIONA" << endl;
 }
-*/

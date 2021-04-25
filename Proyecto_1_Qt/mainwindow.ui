@@ -14,35 +14,13 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>0</y>
-      <width>241</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>16</pointsize>
-      <weight>75</weight>
-      <italic>false</italic>
-      <bold>true</bold>
-      <underline>true</underline>
-     </font>
-    </property>
-    <property name="text">
-     <string>RAM VIEW LIVE</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="numeroLinea">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>70</y>
       <width>51</width>
-      <height>331</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="font">
@@ -67,7 +45,7 @@ p, li { white-space: pre-wrap; }
       <x>70</x>
       <y>70</y>
       <width>721</width>
-      <height>331</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="font">
@@ -115,9 +93,6 @@ p, li { white-space: pre-wrap; }
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Minimum</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
@@ -126,14 +101,42 @@ p, li { white-space: pre-wrap; }
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QPushButton" name="debugButton">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>DEBUG</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="stopButton">
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>STOP</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>410</y>
-      <width>781</width>
+      <x>0</x>
+      <y>570</y>
+      <width>791</width>
       <height>279</height>
      </rect>
     </property>
@@ -211,20 +214,69 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>70</y>
-      <width>451</width>
-      <height>621</height>
+      <x>820</x>
+      <y>0</y>
+      <width>431</width>
+      <height>561</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="labelRAM">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>RAM LIVE!</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QListWidget" name="listaRAM"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

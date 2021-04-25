@@ -13,6 +13,8 @@ SOURCES += \
     mserver.cpp
 
 HEADERS += \
+    json - Copy.hpp \
+    json - Copy.hpp \
     mserver.h
 
 FORMS += \

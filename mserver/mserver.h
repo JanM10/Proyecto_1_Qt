@@ -19,9 +19,6 @@ public:
     mserver(QWidget *parent = nullptr);
 
 private slots:
-    void on_conectButton_clicked();
-
-    void on_quitButton_clicked();
 
 private:
     Ui::mserver *ui;

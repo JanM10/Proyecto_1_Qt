@@ -2,6 +2,9 @@
 #include "ui_mserver.h"
 #include <QLocalSocket>
 #include <QTextStream>
+#include "json - Copy.hpp"
+
+using json = nlohmann::json;
 
 mserver::mserver(QWidget *parent)
     : QMainWindow(parent)
@@ -12,19 +15,9 @@ mserver::mserver(QWidget *parent)
 
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
+        ui->listWidget->clear();
         ui->listWidget->addItem(T.readAll());
     });
 
     mSocket->connectToServer("MiServidorLocal");
-}
-
-
-void mserver::on_conectButton_clicked()
-{
-
-}
-
-void mserver::on_quitButton_clicked()
-{
-    close();
 }

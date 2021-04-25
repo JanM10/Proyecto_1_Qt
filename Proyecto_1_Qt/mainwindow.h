@@ -31,9 +31,11 @@ private slots:
 
     void separarTexto();
 
-    void printMatches(std::string str, std::regex reg);
+    void printIntFloatMatches(std::string str);
 
     void printCharMatches(std::string str, std::regex reg);
+
+    void on_debugButton_clicked();
 
 private:
     Ui::MainWindow *ui;
