@@ -3,8 +3,10 @@
 #include <QLocalSocket>
 #include <QTextStream>
 #include "json - Copy.hpp"
+#include <iostream>
 
 using json = nlohmann::json;
+using namespace std;
 
 mserver::mserver(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +18,8 @@ mserver::mserver(QWidget *parent)
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
         ui->listWidget->clear();
+//        json newJson = json::parse(dataJson);
+//        cout<<newJson["Nombre de la variable"]<<endl;
         ui->listWidget->addItem(T.readAll());
     });
 

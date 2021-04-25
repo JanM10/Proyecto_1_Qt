@@ -111,11 +111,10 @@ void MainWindow::separarTexto( ){
         }
 //        string getJSON = listaJSON.dump();
 //        cout << "JSON: " << getJSON << endl;
+        ;
         string dataJson = listaJSON.dump();
         cout<<dataJson<<endl;
-
-        json newJson = json::parse(dataJson);
-        cout<<newJson["Nombre de la variable"]<<endl;
+        mLocalServer->envia(dataJson.c_str());
         cout<<"TextoCortado: " << textoCortado << endl;
     }
 }
