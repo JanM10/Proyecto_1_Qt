@@ -7,6 +7,7 @@
 #include <sstream>
 #include <regex>
 #include "json.hpp"
+#include <map>
 
 
 using namespace std;
@@ -124,12 +125,13 @@ void MainWindow::printIntFloatMatches(string str){
     regex numerosLetras("\\w+");
     regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
     int i = 0;
+    map<string,string>tipoDeDato = {{"int","4"},{"long","8"},{"float","4"},{"double","8"}};
 
     while (i<3){
         if(i == 0){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
-            listaJSON["Bytes del tipo de dato"] += matches.str(0);
+            listaJSON["Bytes del tipo de dato"] += tipoDeDato[matches.str(0)];
             str = matches.suffix().str();
         }
         else if(i == 1){
@@ -146,6 +148,11 @@ void MainWindow::printIntFloatMatches(string str){
         }
         i++;
     }
+    ostringstream get_the_address;
+    get_the_address << &listaJSON["Nombre de la variable"][0];
+    string address = get_the_address.str();
+    cout<< "&: "<<address << endl;
+    listaJSON["Direccion de Memoria"] += address;
     string getJSON = listaJSON.dump();
     cout << "JSON: " << getJSON << endl;
 }

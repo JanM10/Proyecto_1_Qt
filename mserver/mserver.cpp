@@ -18,6 +18,8 @@ mserver::mserver(QWidget *parent)
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
         ui->listWidget->clear();
+        QString hola = T.readAll();
+        cout << hola.toStdString() << endl;
 //        json newJson = json::parse(dataJson);
 //        cout<<newJson["Nombre de la variable"]<<endl;
         ui->listWidget->addItem(T.readAll());
