@@ -4,6 +4,9 @@
 
 using namespace std;
 
+///
+/// \brief The intlong class
+///
 class intlong
 {
 public:
@@ -11,11 +14,29 @@ public:
     string valorVariable;
     string direccionMem;
     string valorBytes;
-    intlong(string nV, string vV, string vB);
 
+    ///
+    /// \brief get_nombreVariable
+    /// \return
+    ///
     string get_nombreVariable();
+
+    ///
+    /// \brief get_valorVariable
+    /// \return
+    ///
     string get_valorVariable();
+
+    ///
+    /// \brief get_direccionMem
+    /// \return
+    ///
     string get_direccionMem();
+
+    ///
+    /// \brief get_valorBytes
+    /// \return
+    ///
     string get_valorBytes();
 };
 

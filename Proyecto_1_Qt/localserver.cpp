@@ -2,6 +2,8 @@
 #include <QLocalSocket>
 #include <QTextStream>
 
+///LocalServer se crea un servidor local
+///Esta clase cea un servidor y espera a que el cliente se conecte
 LocalServer::LocalServer(QObject *parent)
     : QLocalServer(parent)
 {
@@ -12,6 +14,8 @@ LocalServer::LocalServer(QObject *parent)
     });
 }
 
+///envia envia mensajes atraves de sockets
+///Esta funcion hace lo que dice el nombre, envia mensajes atraves de un socket para que lo resiva el cliente
 void LocalServer::envia(const QString &msj)
 {
     if(mSocket){

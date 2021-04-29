@@ -16,8 +16,9 @@ using json = nlohmann::json;
 
 QStringList lines;
 int numero = 1;
-json listaJSON;
 
+///MainWindow se inicia la ventana principal y se inica la conexion con el servidor
+/// Esta funcion inicia la ventana principal del IDE, ademas crea un socket para conectarse con el servidor
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -29,17 +30,19 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::critical(this, "Error", mLocalServer->errorString());
     }
     else{
-//        QMessageBox::information(this, "Servidor","Iniciando...");
         cout << "Servidor Iniciado" << endl;
     }
 }
 
-
+///on_clearButton_clicked borra el texto de aplicationLogConsole
+/// Todos los datos que se muestren en aplicationLogConsole son borrados al estripar el boton
 void MainWindow::on_clearButton_clicked()
 {
     ui->aplicationLogConsole->clear();
 }
 
+///on_runButton_clicked este boton lee todo el texto dentro de writeCode y manda los resultados a la consola
+/// Esta funcion lee todo lo que se haya escrito en el cuadro de texto writeCode, en caso de que haya alguna suma, resta, print etc, de variables, los resultados se imprimen en la consola.
 void MainWindow::on_runButton_clicked()
 {
     mLocalServer->envia(ui->writeCode->toPlainText());
@@ -47,11 +50,10 @@ void MainWindow::on_runButton_clicked()
     //close();
 }
 
+/// on_writeCode_textChanged detecta cuadno hay un cambio dentro de writeCode
+/// Esta funcion detecta cada vez que se haga un cambio dentro del campo de texto writeCode y ejecuta diferentes funciones para verificar el texto
 void MainWindow::on_writeCode_textChanged()
 {
-//    ui->console->setText(ui->writeCode->toPlainText());
-//    std::cout << "Text: " << ui->writeCode->toPlainText().toStdString() << std::endl;
-
     if(ui->writeCode->toPlainText().contains("\n")){
         lines = ui->writeCode->toPlainText().split("\n");
     }
@@ -70,18 +72,15 @@ void MainWindow::on_writeCode_textChanged()
     lines.clear();
 }
 
+///separarTexto separa un string en sub-strings
+/// Esta funcion separa el texto en sub-strings con la informacion que necesitamos para luego mandarlo al JSON.
 void MainWindow::separarTexto( ){
     string textoCortado = "";
     smatch results;
     regex soloLetras("[a-zA-Z]+");
-    regex prueba("^([a-zA-Z]+)(?=.)([+-]?([0-9]*)(\\.([0-9]+))?)$");
     regex igualDespues("^\\w+( +\\w+)*$");
     sregex_iterator lastmatch;
-
-    listaJSON["Direccion de Memoria"] = {};
-    listaJSON["Bytes del tipo de dato"] = {};
-    listaJSON["Nombre de la variable"] = {};
-    listaJSON["Valor de la variable"] = {};
+    json listaJSON;
 
     //lines[i].contains("struct")
     //lines[i].contains("reference<tipo>")
@@ -90,7 +89,11 @@ void MainWindow::separarTexto( ){
         textoCortado = lines[i].toStdString();
 
         if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
-            printIntFloatMatches(textoCortado);
+            listaJSON["Direccion de Memoria"] = {};
+            listaJSON["Bytes del tipo de dato"] = {};
+            listaJSON["Nombre de la variable"] = {};
+            listaJSON["Valor de la variable"] = {};
+            printIntFloatMatches(textoCortado,listaJSON);
         }
         else if (lines[i].contains("char")) {
 //            printMatches(textoCortado,igualDespues);
@@ -120,7 +123,9 @@ void MainWindow::separarTexto( ){
     }
 }
 
-void MainWindow::printIntFloatMatches(string str){
+///printIntFloatMatches es una funcion que separa una linea de texto en ints o float
+///Esta funcion utliza regex para identificar 2 strings, el primer string es el tipo de dato, el segundo es el nombre de la variable y tercero se identifica si es int o float.
+void MainWindow::printIntFloatMatches(string str, json listaJSON){
     smatch matches;
     regex numerosLetras("\\w+");
     regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
@@ -148,40 +153,59 @@ void MainWindow::printIntFloatMatches(string str){
         }
         i++;
     }
-    ostringstream get_the_address;
-    get_the_address << &listaJSON["Nombre de la variable"][0];
-    string address = get_the_address.str();
-    cout<< "&: "<<address << endl;
-    listaJSON["Direccion de Memoria"] += address;
     string getJSON = listaJSON.dump();
     cout << "JSON: " << getJSON << endl;
 }
 
-void MainWindow::printCharMatches(std::string str, std::regex reg){
-//    textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
-//    cout<< textoCortado << endl;
-//    textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
-//    cout<< textoCortado << endl;
-//    textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
-//    cout<< textoCortado << endl;
-//    textoCortado = lines[i].remove(QString('"'), Qt::CaseInsensitive).toStdString();
-//    cout<< textoCortado << endl;
-//    textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
-//    cout<< "SUB:"<<textoCortado << endl;
-//    textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
-//    cout<< "SUB2:"<<textoCortado << endl;
+///printCharMatches es una funcion que separa una linea de texto en strings y char
+///Esta funcion utliza regex para identificar 2 strings, el primer string es el tipo de dato, el segundo es el nombre de la variable y tercero se identifica un char.
+void MainWindow::printCharMatches(string str, json listaJSON){
+    smatch matches;
+    regex numerosLetras("\\w+");
+    int i = 0;
+    map<string,string>tipoDeDato = {{"int","4"},{"long","8"},{"float","4"},{"double","8"}};
+    while (i<3){
+        if(i == 0){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSON["Bytes del tipo de dato"] += tipoDeDato[matches.str(0)];
+            str = matches.suffix().str();
+        }
+        else if(i == 1){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSON["Nombre de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        else{
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSON["Valor de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        i++;
+    }
+    string getJSON = listaJSON.dump();
+    cout << "JSON: " << getJSON << endl;
 }
 
-//void shallowCopy(){
-//    int value = 5;
-//    int *pointer = &value;
-//    int *pointer2 = &value;
+///on_debugButton_clicked este boton de debug corre el codigo linea por linea
+///Este boton va recorriendo el codigo linea por linea e identifica si hay algun tipo de error.
+void MainWindow::on_debugButton_clicked(){
+    separarTexto();
+}
 
-//    cout << "pointer:" << pointer << " -- pointer2:" << pointer2 << '\n';
-//    cout << "pointer:" << *pointer << " -- pointer2:" << *pointer2 << '\n';
-//}
+/*
+void shallowCopy(){
+    int value = 5;
+    int *pointer = &value;
+    int *pointer2 = &value;
 
-/*void demo::deepCopy(){
+    cout << "pointer:" << pointer << " -- pointer2:" << pointer2 << '\n';
+    cout << "pointer:" << *pointer << " -- pointer2:" << *pointer2 << '\n';
+}
+
+void demo::deepCopy(){
     demo obj1;
     obj1.getdata(10,20,30);
     obj1.showdata();
@@ -189,8 +213,3 @@ void MainWindow::printCharMatches(std::string str, std::regex reg){
     obj2.showdata();
 }
 */
-
-void MainWindow::on_debugButton_clicked()
-{
-    cout<< "EL BOTON FUNCIONA" << endl;
-}
