@@ -2,6 +2,7 @@
 #define LOCALSERVER_H
 
 #include <QLocalServer>
+#include <string>
 
 class QLocalSocket;
 

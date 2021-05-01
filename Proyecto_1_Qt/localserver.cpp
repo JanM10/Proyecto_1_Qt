@@ -1,6 +1,10 @@
 #include "localserver.h"
 #include <QLocalSocket>
 #include <QTextStream>
+#include <string>
+#include <iostream>
+
+using namespace std;
 
 ///LocalServer se crea un servidor local
 ///Esta clase cea un servidor y espera a que el cliente se conecte
@@ -21,6 +25,7 @@ void LocalServer::envia(const QString &msj)
     if(mSocket){
     QTextStream T(mSocket);
     T << msj;
+    cout << "MSJ: "<<msj.toStdString() << endl;
     mSocket->flush();
     }
 }

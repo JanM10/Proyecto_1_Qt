@@ -64,14 +64,14 @@ private slots:
     /// \param str
     /// \param listaJSON
     ///
-    void printIntFloatMatches(std::string str,json listaJSON);
+    void printIntFloatMatches(std::string str);
 
     ///
     /// \brief printCharMatches
     /// \param str
     /// \param listaJSON
     ///
-    void printCharMatches(std::string str, json listaJSON);
+    void printCharMatches(std::string str);
 
     ///
     /// \brief on_debugButton_clicked
@@ -79,6 +79,8 @@ private slots:
     void on_debugButton_clicked();
 
 private:
+    json listaJSON;
+
     ///
     /// \brief ui
     ///

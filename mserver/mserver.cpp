@@ -30,7 +30,9 @@ mserver::mserver(QWidget *parent)
         QTextStream T(mSocket);
         ui->listWidget->clear();
         string entradaJSON = T.readAll().toStdString();
+        cout << "ENTRADA: "<< entradaJSON << endl;
         json newJson = json::parse(entradaJSON);
+
         for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
             cout << "TAMANO: "<<newJson["Nombre de la variable"].size() << endl;
             arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
@@ -42,9 +44,10 @@ mserver::mserver(QWidget *parent)
             cout << arregloIntLong[i].get_valorBytes() << endl;
 //            cout << arregloIntLong[i].get_direccionMem() << endl;
         }
-        cout<<"NOMBRE: "<<newJson["Nombre de la variable"]<<endl;
-        ui->listWidget->addItem(newJson);
-        cout << entradaJSON << endl;
+
+//        cout<<"NOMBRE: "<<newJson["Nombre de la variable"]<<endl;
+        ui->listWidget->addItem(T.readAll());
+        cout << "JSON: "<<newJson << endl;
     });
     mSocket->connectToServer("MiServidorLocal");
 }
