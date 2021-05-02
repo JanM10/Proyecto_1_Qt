@@ -7,10 +7,15 @@
 #include <sstream>
 #include <string>
 #include "intlong.h"
+#include "floatdouble.h"
+#include "clasechar.h"
 
 using json = nlohmann::json;
 using namespace std;
 intlong arregloIntLong[99];
+floatdouble arregloFloatDouble[99];
+claseChar arregloChar[99];
+
 
 ///mserver servidor que recibe los datos via JSON
 ///Este servidor se encarga de recibir los datos que el cliente le manda via JSON, los ordena y los manda al RAM live.
@@ -21,11 +26,6 @@ mserver::mserver(QWidget *parent)
     ui->setupUi(this);
     mSocket = new QLocalSocket(this);
 
-//    arregloIntLong[0].nombreVariable = "Hola";
-//    arregloIntLong[0].valorVariable = "10";
-//    arregloIntLong[0].valorBytes = "4";
-
-
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
         ui->listWidget->clear();
@@ -34,20 +34,42 @@ mserver::mserver(QWidget *parent)
         json newJson = json::parse(entradaJSON);
 
         for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
-            cout << "TAMANO: "<<newJson["Nombre de la variable"].size() << endl;
-            arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
-            arregloIntLong[i].valorVariable = newJson["Valor de la variable"][i];
-            arregloIntLong[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-
-            cout << arregloIntLong[i].get_nombreVariable() << endl;
-            cout << arregloIntLong[i].get_valorVariable() << endl;
-            cout << arregloIntLong[i].get_valorBytes() << endl;
-//            cout << arregloIntLong[i].get_direccionMem() << endl;
+            if(newJson["Bytes del tipo de dato"][i] == "int" || newJson["Bytes del tipo de dato"][i] == "long"){
+                arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
+                string auxiliar = newJson["Valor de la variable"][i];
+                arregloIntLong[i].valorVariable = stoi(auxiliar);
+                arregloIntLong[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+                cout << "Nv: "<<arregloIntLong[i].get_nombreVariable() << endl;
+                cout << "Vv: " <<arregloIntLong[i].get_valorVariable() << endl;
+                cout << "Vb: "<<arregloIntLong[i].get_valorBytes() << endl;
+                cout << "Dm: "<<arregloIntLong[i].get_direccionMem() << endl;
+            }else if(newJson["Bytes del tipo de dato"][i] == "float" || newJson["Bytes del tipo de dato"][i] == "double"){
+                arregloFloatDouble[i].nombreVariable = newJson["Nombre de la variable"][i];
+                string auxiliar = newJson["Valor de la variable"][i];
+                arregloFloatDouble[i].valorVariable = stof(auxiliar);
+                arregloFloatDouble[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+                cout << "Nv: "<<arregloFloatDouble[i].get_nombreVariable() << endl;
+                cout << "Vv: "<<arregloFloatDouble[i].get_valorVariable() << endl;
+                cout << "Vb: "<<arregloFloatDouble[i].get_valorBytes() << endl;
+                cout << "Dm: "<<arregloFloatDouble[i].get_direccionMem() << endl;
+            }else if(newJson["Bytes del tipo de dato"][i] == "char"){
+                arregloChar[i].nombreVariable = newJson["Nombre de la variable"][i];
+                arregloChar[i].valorVariable = newJson["Valor de la variable"][i];
+                arregloChar[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+                cout << "Nv: "<<arregloChar[i].get_nombreVariable() << endl;
+                cout << "Vv: "<<arregloChar[i].get_valorVariable() << endl;
+                cout << "Vb: "<<arregloChar[i].get_valorBytes() << endl;
+                cout << "Dm: "<<arregloChar[i].get_direccionMem() << endl;
+            }
         }
-
-//        cout<<"NOMBRE: "<<newJson["Nombre de la variable"]<<endl;
-        ui->listWidget->addItem(T.readAll());
-        cout << "JSON: "<<newJson << endl;
     });
     mSocket->connectToServer("MiServidorLocal");
+}
+
+void mserver::envia(const QString &msj){
+    if(mSocket){
+    QTextStream T(mSocket);
+    T << msj;
+    mSocket->flush();
+    }
 }

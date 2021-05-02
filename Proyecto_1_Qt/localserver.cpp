@@ -25,7 +25,6 @@ void LocalServer::envia(const QString &msj)
     if(mSocket){
     QTextStream T(mSocket);
     T << msj;
-    cout << "MSJ: "<<msj.toStdString() << endl;
     mSocket->flush();
     }
 }

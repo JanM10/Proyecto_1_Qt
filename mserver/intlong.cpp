@@ -6,15 +6,6 @@
 
 using namespace std;
 
-//intlong::intlong(string nV, string vV, string vB){
-//    nombreVariable = nV;
-//    valorVariable = vV;
-//    ostringstream get_the_address;
-//    get_the_address << &vV;
-//    direccionMem = get_the_address.str();
-//    valorBytes = vB;
-//}
-
 ///
 /// \brief intlong::get_nombreVariable
 /// \return
@@ -27,7 +18,7 @@ string intlong::get_nombreVariable(){
 /// \brief intlong::get_valorVariable
 /// \return
 ///Regresa el valor de la variable
-string intlong::get_valorVariable(){
+int intlong::get_valorVariable(){
     return valorVariable;
 }
 

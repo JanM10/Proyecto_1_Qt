@@ -90,37 +90,22 @@ void MainWindow::separarTexto(){
 
     for(int i=0; i<lines.size()-1; i++){
         textoCortado = lines[i].toStdString();
-
         if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
             printIntFloatMatches(textoCortado);
+        }else if(lines[i].contains("char")){
+            printCharMatches(textoCortado);
         }
-        else if (lines[i].contains("char")) {
-//            printMatches(textoCortado,igualDespues);
-            textoCortado = lines[i].remove(QString("char "), Qt::CaseInsensitive).toStdString();
-            listaJSON["Bytes del tipo de dato"] += "char";
-            cout<< textoCortado << endl;
-            textoCortado = lines[i].remove(QString("="), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = lines[i].remove(QString(";"), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = lines[i].remove(QString('"'), Qt::CaseInsensitive).toStdString();
-            cout<< textoCortado << endl;
-            textoCortado = textoCortado.substr(0,lines[i].toStdString().find("  "));
-            listaJSON["Nombre de la variable"] += textoCortado;
-            cout<< "SUB:"<<textoCortado << endl;
-            textoCortado = lines[i].toStdString().substr(lines[i].toStdString().find(" ") + 2);
-            listaJSON["Valor de la variable"] += textoCortado;
-            cout<< "SUB2:"<<textoCortado << endl;
+        else{
+            cout << "NO SE PUDO" << endl;
         }
-//        string getJSON = listaJSON.dump();
-//        cout << "JSON: " << getJSON << endl;
-
+    }
+    if(!listaJSON.empty()){
         string dataJson = listaJSON.dump();
-        cout << "LISTA JSON: "<<listaJSON << endl;
-        cout<<"JSON SERVER str: "<< dataJson <<endl;
-        cout << "QUE SE MANDA?: " << dataJson.c_str() << endl;
+        cout << "LISTA JSON: "<< dataJson << endl;
         mLocalServer->envia(dataJson.c_str());
         cout<<"TextoCortado: " << textoCortado << endl;
+    }else{
+        cout << "No hay nada que enviar" << endl;
     }
 }
 
@@ -131,12 +116,12 @@ void MainWindow::printIntFloatMatches(string str){
     regex numerosLetras("\\w+");
     regex numerosFloat("\\d+?[+-]?([0-9]*[.])?[0-9]+");
     int i = 0;
-    map<string,string>tipoDeDato = {{"int","4"},{"long","8"},{"float","4"},{"double","8"}};
+//    map<string,string>tipoDeDato = {{"int","4"},{"long","8"},{"float","4"},{"double","8"}};
 
     while (i<3){
         if(i == 0){
             regex_search(str,matches,numerosLetras);
-            listaJSON["Bytes del tipo de dato"] += tipoDeDato[matches.str(0)];
+            listaJSON["Bytes del tipo de dato"] += matches.str(0);
             cout << listaJSON["Bytes del tipo de dato"] << endl;
             str = matches.suffix().str();
         }
@@ -154,8 +139,6 @@ void MainWindow::printIntFloatMatches(string str){
         }
         i++;
     }
-//    string getJSON = listaJSON.dump();
-    cout << "JSON: " << listaJSON << endl;
 }
 
 ///printCharMatches es una funcion que separa una linea de texto en strings y char
@@ -163,13 +146,13 @@ void MainWindow::printIntFloatMatches(string str){
 void MainWindow::printCharMatches(string str){
     smatch matches;
     regex numerosLetras("\\w+");
+//    map<string,string>tipoDeDato = {{"char","1"}};
     int i = 0;
-    map<string,string>tipoDeDato = {{"int","4"},{"long","8"},{"float","4"},{"double","8"}};
     while (i<3){
         if(i == 0){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
-            listaJSON["Bytes del tipo de dato"] += tipoDeDato[matches.str(0)];
+            listaJSON["Bytes del tipo de dato"] += matches.str(0);
             str = matches.suffix().str();
         }
         else if(i == 1){
@@ -186,8 +169,6 @@ void MainWindow::printCharMatches(string str){
         }
         i++;
     }
-    string getJSON = listaJSON.dump();
-    cout << "JSON: " << getJSON << endl;
 }
 
 ///on_debugButton_clicked este boton de debug corre el codigo linea por linea

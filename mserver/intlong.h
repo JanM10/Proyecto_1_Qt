@@ -11,7 +11,7 @@ class intlong
 {
 public:
     string nombreVariable;
-    string valorVariable;
+    int valorVariable;
     string direccionMem;
     string valorBytes;
 
@@ -25,7 +25,7 @@ public:
     /// \brief get_valorVariable
     /// \return
     ///
-    string get_valorVariable();
+    int get_valorVariable();
 
     ///
     /// \brief get_direccionMem

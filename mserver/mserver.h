@@ -25,7 +25,7 @@ public:
     ///
     mserver(QWidget *parent = nullptr);
 
-private slots:
+    void envia(const QString &msj);
 
 private:
     ///
