@@ -10,6 +10,8 @@
 #include <map>
 #include<QJsonObject>
 #include<QJsonValue>
+#include <QLocalSocket>
+#include <QTextStream>
 
 
 using namespace std;
@@ -25,8 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui->setupUi(this); 
     mLocalServer = new LocalServer(this);
+    mSocket = new QLocalSocket(this);
+
 
     if(!mLocalServer->listen("MiServidorLocal")){
         QMessageBox::critical(this, "Error", mLocalServer->errorString());
@@ -34,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     else{
         cout << "Servidor Iniciado" << endl;
     }
+
 }
 
 ///on_clearButton_clicked borra el texto de aplicationLogConsole
@@ -52,14 +57,11 @@ void MainWindow::on_runButton_clicked()
     if(ui->writeCode->toPlainText().contains("\n")){
         lines = ui->writeCode->toPlainText().split("\n");
     }
-//    QString texto = "";
     listaJSON["Direccion de Memoria"] = {};
     listaJSON["Bytes del tipo de dato"] = {};
     listaJSON["Nombre de la variable"] = {};
     listaJSON["Valor de la variable"] = {};
     separarTexto();
-
-//    ui->console->setText(texto);
     lines.clear();
 }
 
@@ -198,3 +200,12 @@ void demo::deepCopy(){
     obj2.showdata();
 }
 */
+
+void MainWindow::on_pushButton_clicked()
+{
+    mSocket->connectToServer("NuevoServidor");
+    connect(mSocket, &QLocalSocket::readyRead, [&](){
+        QTextStream T(mSocket);
+        ui->listaRAM->addItem(T.readAll());
+    });
+}

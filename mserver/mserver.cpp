@@ -9,6 +9,9 @@
 #include "intlong.h"
 #include "floatdouble.h"
 #include "clasechar.h"
+//#include "mlocalserver.h"
+#include <QMessageBox>
+#include "mlocalserver2.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -28,10 +31,18 @@ mserver::mserver(QWidget *parent)
 
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
-        ui->listWidget->clear();
         string entradaJSON = T.readAll().toStdString();
         cout << "ENTRADA: "<< entradaJSON << endl;
         json newJson = json::parse(entradaJSON);
+
+//        for (int i = 0; i<newJson["Nombre de la variable"].size(); i++) {
+//            cout << "Datos JSON: "<< newJson["Nombre de la variable"][i] << endl;
+//        }
+
+//        string datosRAM = "";
+//        for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
+//            datosRAM += newJson["Valor de la variable"][i];
+//        }
 
         for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
             if(newJson["Bytes del tipo de dato"][i] == "int" || newJson["Bytes del tipo de dato"][i] == "long"){
@@ -62,14 +73,25 @@ mserver::mserver(QWidget *parent)
                 cout << "Dm: "<<arregloChar[i].get_direccionMem() << endl;
             }
         }
+//        QString paqueteEnvio = arregloChar->get_nombreVariable();
+//        mLocalServer->envia(info.c_str());
+        cout << "SE ENVIO LA INFO" << endl;
     });
     mSocket->connectToServer("MiServidorLocal");
 }
 
-void mserver::envia(const QString &msj){
-    if(mSocket){
-    QTextStream T(mSocket);
-    T << msj;
-    mSocket->flush();
+void mserver::on_iniciarServidor_clicked()
+{
+    mLocalServer = new MLocalServer2(this);
+
+    if (!mLocalServer->listen("NuevoServidor")){
+        QMessageBox::critical(this, "Error", mLocalServer->errorString());
+    }else{
+        cout << "Servidor2 Iniciado" << endl;
+        QMessageBox::information(this, "EXITO", "El servidor se ha iniciado con exito.");
     }
 }
+
+//void set_RAM_text(string dir, string nombreV, string valorV){
+
+//}

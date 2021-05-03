@@ -13,6 +13,8 @@ SOURCES += \
     floatdouble.cpp \
     intlong.cpp \
     main.cpp \
+    mlocalserver.cpp \
+    mlocalserver2.cpp \
     mserver.cpp
 
 HEADERS += \
@@ -21,6 +23,8 @@ HEADERS += \
     intlong.h \
     json - Copy.hpp \
     json - Copy.hpp \
+    mlocalserver.h \
+    mlocalserver2.h \
     mserver.h
 
 FORMS += \

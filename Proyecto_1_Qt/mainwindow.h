@@ -6,12 +6,6 @@
 #include <string>
 #include "json.hpp"
 
-#include<QJsonArray>
-#include<QJsonDocument>
-#include<QJsonObject>
-#include<QJsonValue>
-#include<QDebug>
-
 using json = nlohmann::json;
 
 QT_BEGIN_NAMESPACE
@@ -21,6 +15,7 @@ class MainWindow;
 QT_END_NAMESPACE
 
 class LocalServer;
+class QLocalSocket;
 
 ///
 /// \brief The MainWindow class
@@ -78,6 +73,8 @@ private slots:
     ///
     void on_debugButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     json listaJSON;
 
@@ -90,5 +87,7 @@ private:
     /// \brief mLocalServer
     ///
     LocalServer *mLocalServer;
+
+    QLocalSocket *mSocket;
 };
 #endif // MAINWINDOW_H

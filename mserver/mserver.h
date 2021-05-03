@@ -2,6 +2,9 @@
 #define MSERVER_H
 
 #include <QMainWindow>
+#include <string>
+
+using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -10,6 +13,8 @@ class mserver;
 QT_END_NAMESPACE
 
 class QLocalSocket;
+class mlocalserver;
+class MLocalServer2;
 
 ///
 /// \brief The mserver class
@@ -25,7 +30,10 @@ public:
     ///
     mserver(QWidget *parent = nullptr);
 
-    void envia(const QString &msj);
+private slots:
+    void on_iniciarServidor_clicked();
+
+//    void set_RAM_text(string dir, string nombreV, string valorV);
 
 private:
     ///
@@ -37,5 +45,9 @@ private:
     /// \brief mSocket
     ///
     QLocalSocket *mSocket;
+
+//    mlocalserver *myLocalServer;
+
+    MLocalServer2 *mLocalServer;
 };
 #endif // MSERVER_H
