@@ -9,9 +9,10 @@
 #include "intlong.h"
 #include "floatdouble.h"
 #include "clasechar.h"
-//#include "mlocalserver.h"
 #include <QMessageBox>
 #include "mlocalserver2.h"
+#include <QDebug>
+#include <QStringList>
 
 using json = nlohmann::json;
 using namespace std;
@@ -32,49 +33,39 @@ mserver::mserver(QWidget *parent)
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
         string entradaJSON = T.readAll().toStdString();
-        cout << "ENTRADA: "<< entradaJSON << endl;
         json newJson = json::parse(entradaJSON);
 
-//        for (int i = 0; i<newJson["Nombre de la variable"].size(); i++) {
-//            cout << "Datos JSON: "<< newJson["Nombre de la variable"][i] << endl;
-//        }
-
-//        string datosRAM = "";
-//        for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
-//            datosRAM += newJson["Valor de la variable"][i];
-//        }
 
         for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
             if(newJson["Bytes del tipo de dato"][i] == "int" || newJson["Bytes del tipo de dato"][i] == "long"){
                 arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
-                string auxiliar = newJson["Valor de la variable"][i];
-                arregloIntLong[i].valorVariable = stoi(auxiliar);
+//                string auxiliar = newJson["Valor de la variable"][i];
+//                arregloIntLong[i].valorVariable = stoi(auxiliar);
+                arregloIntLong[i].valorVariable = newJson["Valor de la variable"][i];
                 arregloIntLong[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                cout << "Nv: "<<arregloIntLong[i].get_nombreVariable() << endl;
-                cout << "Vv: " <<arregloIntLong[i].get_valorVariable() << endl;
-                cout << "Vb: "<<arregloIntLong[i].get_valorBytes() << endl;
-                cout << "Dm: "<<arregloIntLong[i].get_direccionMem() << endl;
-            }else if(newJson["Bytes del tipo de dato"][i] == "float" || newJson["Bytes del tipo de dato"][i] == "double"){
+                newJson["Direccion de Memoria"] += arregloIntLong[i].get_direccionMem();
+            }
+            else if(newJson["Bytes del tipo de dato"][i] == "float" || newJson["Bytes del tipo de dato"][i] == "double"){
                 arregloFloatDouble[i].nombreVariable = newJson["Nombre de la variable"][i];
                 string auxiliar = newJson["Valor de la variable"][i];
                 arregloFloatDouble[i].valorVariable = stof(auxiliar);
                 arregloFloatDouble[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                cout << "Nv: "<<arregloFloatDouble[i].get_nombreVariable() << endl;
-                cout << "Vv: "<<arregloFloatDouble[i].get_valorVariable() << endl;
-                cout << "Vb: "<<arregloFloatDouble[i].get_valorBytes() << endl;
-                cout << "Dm: "<<arregloFloatDouble[i].get_direccionMem() << endl;
-            }else if(newJson["Bytes del tipo de dato"][i] == "char"){
+                newJson["Direccion de Memoria"] += arregloFloatDouble[i].get_direccionMem();
+            }
+            else if(newJson["Bytes del tipo de dato"][i] == "char"){
                 arregloChar[i].nombreVariable = newJson["Nombre de la variable"][i];
                 arregloChar[i].valorVariable = newJson["Valor de la variable"][i];
                 arregloChar[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                cout << "Nv: "<<arregloChar[i].get_nombreVariable() << endl;
-                cout << "Vv: "<<arregloChar[i].get_valorVariable() << endl;
-                cout << "Vb: "<<arregloChar[i].get_valorBytes() << endl;
-                cout << "Dm: "<<arregloChar[i].get_direccionMem() << endl;
+                newJson["Direccion de Memoria"] += arregloChar[i].get_direccionMem();
             }
         }
-//        QString paqueteEnvio = arregloChar->get_nombreVariable();
-//        mLocalServer->envia(info.c_str());
+        string listaStrings[99] = {newJson["Direccion de Memoria"].dump(),"\n",
+                                   newJson["Nombre de la variable"].dump(),"\n",
+                                   newJson["Valor de la variable"].dump(),"\n"};
+//        for (int j=0;j<listaStrings->size();j++) {
+//            mLocalServer->envia(listaStrings[j].c_str()); //newJson["Nombre de la variable"].dump().c_str()
+//        }
+        mLocalServer->envia(newJson.dump().c_str());
         cout << "SE ENVIO LA INFO" << endl;
     });
     mSocket->connectToServer("MiServidorLocal");
@@ -92,6 +83,9 @@ void mserver::on_iniciarServidor_clicked()
     }
 }
 
-//void set_RAM_text(string dir, string nombreV, string valorV){
-
-//}
+/*
+        cout << "Nv: "<<arregloIntLong[i].get_nombreVariable() << endl;
+        cout << "Vv: " <<arregloIntLong[i].get_valorVariable() << endl;
+        cout << "Vb: "<<arregloIntLong[i].get_valorBytes() << endl;
+        cout << "Dm: "<<arregloIntLong[i].get_direccionMem() << endl;
+*/

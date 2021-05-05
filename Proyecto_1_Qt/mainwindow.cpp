@@ -201,11 +201,23 @@ void demo::deepCopy(){
 }
 */
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_conectar_con_servidor_clicked()
 {
     mSocket->connectToServer("NuevoServidor");
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
-        ui->listaRAM->addItem(T.readAll());
+        string entradaJSON = T.readAll().toStdString();
+        json newJson = json::parse(entradaJSON);
+
+        for (int i=0;i<newJson["Nombre de la variable"].size();i++) {
+            ui->tablaRAM->setRowCount(i+1);
+//            ui->tablaRAM->insertRow(ui->tablaRAM->rowCount());
+            QString str = QString::fromUtf8(to_string(newJson["Direccion de Memoria"][i]).c_str());
+            ui->tablaRAM->setItem(i, 0, new QTableWidgetItem(str));
+            QString str2 = QString::fromUtf8(to_string(newJson["Valor de la variable"][i]).c_str());
+            ui->tablaRAM->setItem(i, 1, new QTableWidgetItem(str2));
+            QString str3 = QString::fromUtf8(to_string(newJson["Nombre de la variable"][i]).c_str());
+            ui->tablaRAM->setItem(i, 2, new QTableWidgetItem(str3));
+        }
     });
 }

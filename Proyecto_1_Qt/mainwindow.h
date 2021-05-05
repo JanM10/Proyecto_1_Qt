@@ -73,7 +73,7 @@ private slots:
     ///
     void on_debugButton_clicked();
 
-    void on_pushButton_clicked();
+    void on_conectar_con_servidor_clicked();
 
 private:
     json listaJSON;

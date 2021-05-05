@@ -18,7 +18,7 @@ string intlong::get_nombreVariable(){
 /// \brief intlong::get_valorVariable
 /// \return
 ///Regresa el valor de la variable
-int intlong::get_valorVariable(){
+string intlong::get_valorVariable(){
     return valorVariable;
 }
 

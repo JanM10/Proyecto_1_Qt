@@ -274,16 +274,42 @@ p, li { white-space: pre-wrap; }
       </spacer>
      </item>
      <item>
-      <widget class="QListWidget" name="listaRAM"/>
+      <widget class="QTableWidget" name="tablaRAM">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <column>
+        <property name="text">
+         <string>Dir Mem</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Valor Variable</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Nombre Variable</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Conteo</string>
+        </property>
+       </column>
+      </widget>
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="conectar_con_servidor">
     <property name="geometry">
      <rect>
       <x>880</x>
       <y>680</y>
-      <width>281</width>
+      <width>341</width>
       <height>41</height>
      </rect>
     </property>
@@ -293,7 +319,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>INICIAR SERVIDOR</string>
+     <string>CONECTAR CON SERVIDOR</string>
     </property>
    </widget>
   </widget>

@@ -13,7 +13,7 @@ class mserver;
 QT_END_NAMESPACE
 
 class QLocalSocket;
-class mlocalserver;
+//class mlocalserver;
 class MLocalServer2;
 
 ///
@@ -32,8 +32,6 @@ public:
 
 private slots:
     void on_iniciarServidor_clicked();
-
-//    void set_RAM_text(string dir, string nombreV, string valorV);
 
 private:
     ///
