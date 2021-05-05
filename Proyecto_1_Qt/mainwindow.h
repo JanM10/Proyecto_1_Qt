@@ -42,8 +42,6 @@ private slots:
     ///
     void on_runButton_clicked();
 
-//    void on_pushButton_clicked();
-
     ///
     /// \brief on_writeCode_textChanged
     ///
@@ -68,6 +66,8 @@ private slots:
     ///
     void printCharMatches(std::string str);
 
+    void printReference(std::string str);
+
     ///
     /// \brief on_debugButton_clicked
     ///
@@ -77,6 +77,7 @@ private slots:
 
 private:
     json listaJSON;
+    json listaJSONRef;
 
     ///
     /// \brief ui

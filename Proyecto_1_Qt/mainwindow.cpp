@@ -61,6 +61,11 @@ void MainWindow::on_runButton_clicked()
     listaJSON["Bytes del tipo de dato"] = {};
     listaJSON["Nombre de la variable"] = {};
     listaJSON["Valor de la variable"] = {};
+
+    listaJSONRef["Tipo de dato"] = {};
+    listaJSONRef["Nombre de la variable"] = {};
+    listaJSONRef["GetValue de la variable"] = {};
+
     separarTexto();
     lines.clear();
 }
@@ -90,9 +95,15 @@ void MainWindow::separarTexto(){
     //lines[i].contains("struct")
     //lines[i].contains("reference<tipo>")
 
+    string tiposDeDatos[6] = {"int","float","long","double","char","struct"};
+
     for(int i=0; i<lines.size()-1; i++){
         textoCortado = lines[i].toStdString();
-        if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
+        if(lines[i].contains("reference<int>") || lines[i].contains("reference<long>")
+                || lines[i].contains("reference<char>") || lines[i].contains("reference<float>")
+                || lines[i].contains("reference<double>")){
+            printReference(textoCortado);
+        }else if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
             printIntFloatMatches(textoCortado);
         }else if(lines[i].contains("char")){
             printCharMatches(textoCortado);
@@ -101,10 +112,26 @@ void MainWindow::separarTexto(){
             cout << "NO SE PUDO" << endl;
         }
     }
-    if(!listaJSON.empty()){
-        string dataJson = listaJSON.dump();
-        cout << "LISTA JSON: "<< dataJson << endl;
-        mLocalServer->envia(dataJson.c_str());
+    if(!listaJSON["Nombre de la variable"].empty()){
+        if(!listaJSONRef["Nombre de la variable"].empty()){
+            string dataJson = listaJSON.dump();
+            string refJson = listaJSONRef.dump();
+            cout << "LISTA JSON: "<< dataJson << endl;
+            cout << "LISTA REF JSON: "<< refJson << endl;
+            dataJson += "+";
+            mLocalServer->envia(dataJson.c_str());
+            mLocalServer->envia(refJson.c_str());
+            cout<<"TextoCortado: " << textoCortado << endl;
+        }else{
+            string dataJson = listaJSON.dump();
+            cout << "LISTA JSON: "<< dataJson << endl;
+            mLocalServer->envia(dataJson.c_str());
+            cout<<"TextoCortado: " << textoCortado << endl;
+        }
+    }else if (!listaJSONRef["Nombre de la variable"].empty()){
+        string refJson = listaJSONRef.dump();
+        cout << "LISTA REF JSON: "<< refJson << endl;
+        mLocalServer->envia(refJson.c_str());
         cout<<"TextoCortado: " << textoCortado << endl;
     }else{
         cout << "No hay nada que enviar" << endl;
@@ -173,6 +200,44 @@ void MainWindow::printCharMatches(string str){
     }
 }
 
+void MainWindow::printReference(string str){
+    smatch matches;
+    regex numerosLetras("\\w+");
+    int i = 0;
+    while (i<5){
+        if(i == 0){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            str = matches.suffix().str();
+        }
+        else if(i == 1){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSONRef["Tipo de dato"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        else if(i == 2){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSONRef["Nombre de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        else if(i == 3){
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            str = matches.suffix().str();
+        }
+        else{
+            regex_search(str,matches,numerosLetras);
+            cout<<matches.str(0) << endl;
+            listaJSONRef["GetValue de la variable"] += matches.str(0);
+            str = matches.suffix().str();
+        }
+        i++;
+    }
+    cout << "JSON REF: " << listaJSONRef.dump() << endl;
+}
+
 ///on_debugButton_clicked este boton de debug corre el codigo linea por linea
 ///Este boton va recorriendo el codigo linea por linea e identifica si hay algun tipo de error.
 void MainWindow::on_debugButton_clicked(){
@@ -181,25 +246,6 @@ void MainWindow::on_debugButton_clicked(){
 //    listaQJSON["Valores"];
 //    cout << "LISTA JSON: " << listaQJSON << endl;
 }
-
-/*
-void shallowCopy(){
-    int value = 5;
-    int *pointer = &value;
-    int *pointer2 = &value;
-
-    cout << "pointer:" << pointer << " -- pointer2:" << pointer2 << '\n';
-    cout << "pointer:" << *pointer << " -- pointer2:" << *pointer2 << '\n';
-}
-
-void demo::deepCopy(){
-    demo obj1;
-    obj1.getdata(10,20,30);
-    obj1.showdata();
-    demo obj2 = obj1;
-    obj2.showdata();
-}
-*/
 
 void MainWindow::on_conectar_con_servidor_clicked()
 {

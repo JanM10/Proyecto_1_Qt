@@ -33,6 +33,10 @@ mserver::mserver(QWidget *parent)
     connect(mSocket, &QLocalSocket::readyRead, [&](){
         QTextStream T(mSocket);
         string entradaJSON = T.readAll().toStdString();
+        string entradaRefJSON = entradaJSON.substr(entradaJSON.find("+")+1);
+        entradaJSON = entradaJSON.substr(0,entradaJSON.find("+"));
+        cout << "ENTRADA JSON: " << entradaJSON << endl;
+        cout << "ENTRADA REF: " << entradaRefJSON << endl;
         json newJson = json::parse(entradaJSON);
 
 
@@ -62,9 +66,6 @@ mserver::mserver(QWidget *parent)
         string listaStrings[99] = {newJson["Direccion de Memoria"].dump(),"\n",
                                    newJson["Nombre de la variable"].dump(),"\n",
                                    newJson["Valor de la variable"].dump(),"\n"};
-//        for (int j=0;j<listaStrings->size();j++) {
-//            mLocalServer->envia(listaStrings[j].c_str()); //newJson["Nombre de la variable"].dump().c_str()
-//        }
         mLocalServer->envia(newJson.dump().c_str());
         cout << "SE ENVIO LA INFO" << endl;
     });
