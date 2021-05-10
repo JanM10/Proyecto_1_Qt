@@ -61,10 +61,13 @@ void MainWindow::on_runButton_clicked()
     listaJSON["Bytes del tipo de dato"] = {};
     listaJSON["Nombre de la variable"] = {};
     listaJSON["Valor de la variable"] = {};
+//    listaJSON["GetValue de la variable"] = {};
+//    listaJSON["Tipo de dato"] = {};
 
     listaJSONRef["Tipo de dato"] = {};
     listaJSONRef["Nombre de la variable"] = {};
     listaJSONRef["GetValue de la variable"] = {};
+    listaJSONRef["Direccion de Memoria"] = {};
 
     separarTexto();
     lines.clear();
@@ -93,7 +96,6 @@ void MainWindow::separarTexto(){
     sregex_iterator lastmatch;
 
     //lines[i].contains("struct")
-    //lines[i].contains("reference<tipo>")
 
     string tiposDeDatos[6] = {"int","float","long","double","char","struct"};
 
@@ -214,12 +216,15 @@ void MainWindow::printReference(string str){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["Tipo de dato"] += matches.str(0);
+//            listaJSON["Bytes del tipo de dato"] += matches.str(0);
+//            listaJSON["Tipo de dato"] += matches.str(0);
             str = matches.suffix().str();
         }
         else if(i == 2){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["Nombre de la variable"] += matches.str(0);
+//            listaJSON["Nombre de la variable"] += matches.str(0);
             str = matches.suffix().str();
         }
         else if(i == 3){
@@ -231,6 +236,8 @@ void MainWindow::printReference(string str){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["GetValue de la variable"] += matches.str(0);
+//            listaJSON["Valor de la variable"] += matches.str(0);
+//            listaJSON["GetValue de la variable"] += matches.str(0);
             str = matches.suffix().str();
         }
         i++;

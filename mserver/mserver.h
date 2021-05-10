@@ -30,6 +30,8 @@ public:
     ///
     mserver(QWidget *parent = nullptr);
 
+    void remplazarRefIntLong();
+
 private slots:
     void on_iniciarServidor_clicked();
 

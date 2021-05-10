@@ -15,7 +15,8 @@ SOURCES += \
     main.cpp \
     mlocalserver.cpp \
     mlocalserver2.cpp \
-    mserver.cpp
+    mserver.cpp \
+    referenceintlong.cpp
 
 HEADERS += \
     clasechar.h \
@@ -25,7 +26,8 @@ HEADERS += \
     json - Copy.hpp \
     mlocalserver.h \
     mlocalserver2.h \
-    mserver.h
+    mserver.h \
+    referenceintlong.h
 
 FORMS += \
     mserver.ui
