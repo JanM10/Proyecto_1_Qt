@@ -16,6 +16,8 @@ SOURCES += \
     mlocalserver.cpp \
     mlocalserver2.cpp \
     mserver.cpp \
+    referencechar.cpp \
+    referencefloatdouble.cpp \
     referenceintlong.cpp
 
 HEADERS += \
@@ -27,6 +29,8 @@ HEADERS += \
     mlocalserver.h \
     mlocalserver2.h \
     mserver.h \
+    referencechar.h \
+    referencefloatdouble.h \
     referenceintlong.h
 
 FORMS += \

@@ -14,13 +14,19 @@
 #include <QDebug>
 #include <QStringList>
 #include "referenceintlong.h"
+#include "referencefloatdouble.h"
+#include "referencechar.h"
 
 using json = nlohmann::json;
 using namespace std;
+
 intlong arregloIntLong[99];
 floatdouble arregloFloatDouble[99];
 claseChar arregloChar[99];
 referenceIntLong arregloRefIntLong[99];
+referenceFloatDouble arregloRefFloatDouble[99];
+referencechar arregloRefChar[99];
+
 int cantidadVariables;
 json newJson;
 json newRefJson;
@@ -168,11 +174,29 @@ void mserver::guardarRefIntLong(){
 }
 
 void mserver::guardarRefFloatDouble(){
-
+    for (int j=0;j<newRefJson["GetValue de la variable"].size();j++) {
+        arregloRefFloatDouble[j].nombreVariable = newRefJson["Nombre de la variable"][j];
+        arregloRefFloatDouble[j].tipoDeDato = newRefJson["Tipo de dato"][j];
+        arregloRefFloatDouble[j].valorVariable = newRefJson["GetValue de la variable"][j];
+        newRefJson["Direccion de Memoria"] += arregloRefFloatDouble[j].get_direccionMem();
+        cout << "Nv: "<<arregloRefFloatDouble[j].get_nombreVariable() << endl;
+        cout << "Vv: " <<arregloRefFloatDouble[j].get_valorVariable() << endl;
+        cout << "Td: "<<arregloRefFloatDouble[j].get_tipoDeDato() << endl;
+        cout << "Dm: "<<arregloRefFloatDouble[j].get_direccionMem() << endl;
+    }
 }
 
 void mserver::guardarRefChar(){
-
+    for (int j=0;j<newRefJson["GetValue de la variable"].size();j++) {
+        arregloRefChar[j].nombreVariable = newRefJson["Nombre de la variable"][j];
+        arregloRefChar[j].tipoDeDato = newRefJson["Tipo de dato"][j];
+        arregloRefChar[j].valorVariable = newRefJson["GetValue de la variable"][j];
+        newRefJson["Direccion de Memoria"] += arregloRefChar[j].get_direccionMem();
+        cout << "Nv: "<<arregloRefChar[j].get_nombreVariable() << endl;
+        cout << "Vv: " <<arregloRefChar[j].get_valorVariable() << endl;
+        cout << "Td: "<<arregloRefChar[j].get_tipoDeDato() << endl;
+        cout << "Dm: "<<arregloRefChar[j].get_direccionMem() << endl;
+    }
 }
 
 void mserver::remplazarRefIntLong(){
