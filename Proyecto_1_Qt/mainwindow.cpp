@@ -61,8 +61,6 @@ void MainWindow::on_runButton_clicked()
     listaJSON["Bytes del tipo de dato"] = {};
     listaJSON["Nombre de la variable"] = {};
     listaJSON["Valor de la variable"] = {};
-//    listaJSON["GetValue de la variable"] = {};
-//    listaJSON["Tipo de dato"] = {};
 
     listaJSONRef["Tipo de dato"] = {};
     listaJSONRef["Nombre de la variable"] = {};

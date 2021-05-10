@@ -30,7 +30,27 @@ public:
     ///
     mserver(QWidget *parent = nullptr);
 
+    void guardarIntLong();
+
+    void guardarFloatDouble();
+
+    void guardarChar();
+
+
+    void guardarRefIntLong();
+
+    void guardarRefFloatDouble();
+
+    void guardarRefChar();
+
+
     void remplazarRefIntLong();
+
+    void remplazarRefFloatDouble();
+
+    void remplazarRefChar();
+
+
 
 private slots:
     void on_iniciarServidor_clicked();

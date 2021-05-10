@@ -23,6 +23,7 @@ claseChar arregloChar[99];
 referenceIntLong arregloRefIntLong[99];
 int cantidadVariables;
 json newJson;
+json newRefJson;
 
 ///mserver servidor que recibe los datos via JSON
 ///Este servidor se encarga de recibir los datos que el cliente le manda via JSON, los ordena y los manda al RAM live.
@@ -40,7 +41,6 @@ mserver::mserver(QWidget *parent)
         entradaJSON = entradaJSON.substr(0,entradaJSON.find("+"));
         cout << "ENTRADA JSON: " << entradaJSON << endl;
         cout << "ENTRADA REF: " << entradaRefJSON << endl;
-        json newRefJson;
 
         if(entradaJSON == entradaRefJSON){
             entradaRefJSON.erase();
@@ -56,13 +56,6 @@ mserver::mserver(QWidget *parent)
             cout << "JSON NORMAL: "<< newJson << endl;
         }
 
-        if(!newRefJson.empty()){
-            string x = newRefJson["GetValue de la variable"][0];
-            cout << "X vale: " << x << endl;
-        }else{
-            cout << "Esta vacio " << endl;
-        }
-
         cout << "newJSON: " << newJson << endl;
 
         cantidadVariables = newRefJson["Tipo de dato"].size() + newJson["Bytes del tipo de dato"].size();
@@ -70,51 +63,48 @@ mserver::mserver(QWidget *parent)
 
         for(int i = 0; i<newJson["Nombre de la variable"].size(); i++){
             if(newJson["Bytes del tipo de dato"][i] == "int" || newJson["Bytes del tipo de dato"][i] == "long"){
-                arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
-//                string auxiliar = newJson["Valor de la variable"][i];
-//                arregloIntLong[i].valorVariable = stoi(auxiliar);
-                arregloIntLong[i].valorVariable = newJson["Valor de la variable"][i];
-                arregloIntLong[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                newJson["Direccion de Memoria"] += arregloIntLong[i].get_direccionMem();
+                guardarIntLong();
             }
             else if(newJson["Bytes del tipo de dato"][i] == "float" || newJson["Bytes del tipo de dato"][i] == "double"){
-                arregloFloatDouble[i].nombreVariable = newJson["Nombre de la variable"][i];
-                string auxiliar = newJson["Valor de la variable"][i];
-                arregloFloatDouble[i].valorVariable = stof(auxiliar);
-                arregloFloatDouble[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                newJson["Direccion de Memoria"] += arregloFloatDouble[i].get_direccionMem();
+                guardarFloatDouble();
             }
             else if(newJson["Bytes del tipo de dato"][i] == "char"){
-                arregloChar[i].nombreVariable = newJson["Nombre de la variable"][i];
-                arregloChar[i].valorVariable = newJson["Valor de la variable"][i];
-                arregloChar[i].valorBytes = newJson["Bytes del tipo de dato"][i];
-                newJson["Direccion de Memoria"] += arregloChar[i].get_direccionMem();
+                guardarChar();
             }
         }
 
-        for (int j=0;j<newRefJson["GetValue de la variable"].size();j++) {
-            arregloRefIntLong[j].nombreVariable = newRefJson["Nombre de la variable"][j];
-            arregloRefIntLong[j].tipoDeDato = newRefJson["Tipo de dato"][j];
-            arregloRefIntLong[j].valorVariable = newRefJson["GetValue de la variable"][j];
-            newRefJson["Direccion de Memoria"] += arregloRefIntLong[j].get_direccionMem();
-            cout << "Nv: "<<arregloRefIntLong[j].get_nombreVariable() << endl;
-            cout << "Vv: " <<arregloRefIntLong[j].get_valorVariable() << endl;
-            cout << "Td: "<<arregloRefIntLong[j].get_tipoDeDato() << endl;
-            cout << "Dm: "<<arregloRefIntLong[j].get_direccionMem() << endl;
+        if(!newRefJson.empty()){
+            for (int i = 0; i<newRefJson["Tipo de dato"].size(); i++) {
+                if(newRefJson["Tipo de dato"][i] == "int" || newRefJson["Tipo de dato"][i] == "long"){
+                    guardarRefIntLong();
+                }
+                else if(newRefJson["Tipo de dato"][i] == "float" || newRefJson["Tipo de dato"][i] == "double"){
+                    //CREAR guardarRefFLoatDouble();
+                }
+                else if(newRefJson["Tipo de dato"][i] == "char"){
+                    //CREAR guardarRefChar();
+                }
+            }
+
+
+            for (int k=0;k<cantidadVariables;k++) {
+                if(arregloRefIntLong[k].get_tipoDeDato() == "int" or arregloRefIntLong[k].get_tipoDeDato() == "long"){
+                    cout << "PASA POR AQUI" << endl;
+                    remplazarRefIntLong();
+                }
+                else if(arregloRefIntLong[k].get_tipoDeDato() == "float" or arregloRefIntLong[k].get_tipoDeDato() == "double"){
+                    cout << "NADA POR AHORA" << endl;
+                }
+                else if(arregloRefIntLong[k].get_tipoDeDato() == "char"){
+                    cout << "NADA POR AHORA" << endl;
+                }
+            }
+        }
+        else{
+            cout << "Esta vacio " << endl;
         }
 
-        for (int k=0;k<cantidadVariables;k++) {
-            if(arregloRefIntLong[k].get_tipoDeDato() == "int" or arregloRefIntLong[k].get_tipoDeDato() == "long"){
-                cout << "PASA POR AQUI" << endl;
-                remplazarRefIntLong();
-            }
-            else if(arregloRefIntLong[k].get_tipoDeDato() == "float" or arregloRefIntLong[k].get_tipoDeDato() == "double"){
-                cout << "NADA POR AHORA" << endl;
-            }
-            else if(arregloRefIntLong[k].get_tipoDeDato() == "char"){
-                cout << "NADA POR AHORA" << endl;
-            }
-        }
+
         mLocalServer->envia(newJson.dump().c_str());
         cout << "SE ENVIO LA INFO" << endl;
     });
@@ -131,6 +121,58 @@ void mserver::on_iniciarServidor_clicked()
         cout << "Servidor2 Iniciado" << endl;
         QMessageBox::information(this, "EXITO", "El servidor se ha iniciado con exito.");
     }
+}
+
+void mserver::guardarIntLong(){
+    for (int i = 0; i<newJson["Nombre de la variable"].size(); i++) {
+        arregloIntLong[i].nombreVariable = newJson["Nombre de la variable"][i];
+//                string auxiliar = newJson["Valor de la variable"][i];
+//                arregloIntLong[i].valorVariable = stoi(auxiliar);
+        arregloIntLong[i].valorVariable = newJson["Valor de la variable"][i];
+        arregloIntLong[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+        newJson["Direccion de Memoria"] += arregloIntLong[i].get_direccionMem();
+    }
+}
+
+void mserver::guardarFloatDouble(){
+    for (int i = 0; i<newJson["Nombre de la variable"].size(); i++) {
+        arregloFloatDouble[i].nombreVariable = newJson["Nombre de la variable"][i];
+        string auxiliar = newJson["Valor de la variable"][i];
+        arregloFloatDouble[i].valorVariable = stof(auxiliar);
+        arregloFloatDouble[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+        newJson["Direccion de Memoria"] += arregloFloatDouble[i].get_direccionMem();
+    }
+}
+
+void mserver::guardarChar(){
+    for (int i = 0; i<newJson["Nombre de la variable"].size(); i++) {
+        arregloChar[i].nombreVariable = newJson["Nombre de la variable"][i];
+        arregloChar[i].valorVariable = newJson["Valor de la variable"][i];
+        arregloChar[i].valorBytes = newJson["Bytes del tipo de dato"][i];
+        newJson["Direccion de Memoria"] += arregloChar[i].get_direccionMem();
+    }
+}
+
+
+void mserver::guardarRefIntLong(){
+    for (int j=0;j<newRefJson["GetValue de la variable"].size();j++) {
+        arregloRefIntLong[j].nombreVariable = newRefJson["Nombre de la variable"][j];
+        arregloRefIntLong[j].tipoDeDato = newRefJson["Tipo de dato"][j];
+        arregloRefIntLong[j].valorVariable = newRefJson["GetValue de la variable"][j];
+        newRefJson["Direccion de Memoria"] += arregloRefIntLong[j].get_direccionMem();
+        cout << "Nv: "<<arregloRefIntLong[j].get_nombreVariable() << endl;
+        cout << "Vv: " <<arregloRefIntLong[j].get_valorVariable() << endl;
+        cout << "Td: "<<arregloRefIntLong[j].get_tipoDeDato() << endl;
+        cout << "Dm: "<<arregloRefIntLong[j].get_direccionMem() << endl;
+    }
+}
+
+void mserver::guardarRefFloatDouble(){
+
+}
+
+void mserver::guardarRefChar(){
+
 }
 
 void mserver::remplazarRefIntLong(){
