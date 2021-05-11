@@ -7,7 +7,7 @@ string floatdouble::get_nombreVariable(){
     return nombreVariable;
 }
 
-float floatdouble::get_valorVariable(){
+string floatdouble::get_valorVariable(){
     return valorVariable;
 }
 

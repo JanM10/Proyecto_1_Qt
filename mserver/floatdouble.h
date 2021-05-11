@@ -8,14 +8,14 @@ class floatdouble
 {
 public:
     string nombreVariable;
-    float valorVariable;
+    string valorVariable;
     string direccionMem;
     string valorBytes;
 
     string get_nombreVariable();
 
 
-    float get_valorVariable();
+    string get_valorVariable();
 
 
     string get_direccionMem();

@@ -214,15 +214,12 @@ void MainWindow::printReference(string str){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["Tipo de dato"] += matches.str(0);
-//            listaJSON["Bytes del tipo de dato"] += matches.str(0);
-//            listaJSON["Tipo de dato"] += matches.str(0);
             str = matches.suffix().str();
         }
         else if(i == 2){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["Nombre de la variable"] += matches.str(0);
-//            listaJSON["Nombre de la variable"] += matches.str(0);
             str = matches.suffix().str();
         }
         else if(i == 3){
@@ -234,8 +231,6 @@ void MainWindow::printReference(string str){
             regex_search(str,matches,numerosLetras);
             cout<<matches.str(0) << endl;
             listaJSONRef["GetValue de la variable"] += matches.str(0);
-//            listaJSON["Valor de la variable"] += matches.str(0);
-//            listaJSON["GetValue de la variable"] += matches.str(0);
             str = matches.suffix().str();
         }
         i++;
