@@ -21,6 +21,9 @@ using json = nlohmann::json;
 QStringList lines;
 int numero = 1;
 
+int sumaDebug = 0;
+bool flag = false;
+
 ///MainWindow se inicia la ventana principal y se inica la conexion con el servidor
 /// Esta funcion inicia la ventana principal del IDE, ademas crea un socket para conectarse con el servidor
 MainWindow::MainWindow(QWidget *parent)
@@ -97,45 +100,90 @@ void MainWindow::separarTexto(){
 
     string tiposDeDatos[6] = {"int","float","long","double","char","struct"};
 
-    for(int i=0; i<lines.size()-1; i++){
-        textoCortado = lines[i].toStdString();
-        if(lines[i].contains("reference<int>") || lines[i].contains("reference<long>")
-                || lines[i].contains("reference<char>") || lines[i].contains("reference<float>")
-                || lines[i].contains("reference<double>")){
-            printReference(textoCortado);
-        }else if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
-            printIntFloatMatches(textoCortado);
-        }else if(lines[i].contains("char")){
-            printCharMatches(textoCortado);
+    if(flag == false){
+        for(int i=0; i<lines.size()-1; i++){
+            textoCortado = lines[i].toStdString();
+            if(lines[i].contains("reference<int>") || lines[i].contains("reference<long>")
+                    || lines[i].contains("reference<char>") || lines[i].contains("reference<float>")
+                    || lines[i].contains("reference<double>")){
+                printReference(textoCortado);
+            }else if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
+                printIntFloatMatches(textoCortado);
+            }else if(lines[i].contains("char")){
+                printCharMatches(textoCortado);
+            }
+            else{
+                cout << "NO SE PUDO" << endl;
+            }
         }
-        else{
-            cout << "NO SE PUDO" << endl;
-        }
-    }
-    if(!listaJSON["Nombre de la variable"].empty()){
-        if(!listaJSONRef["Nombre de la variable"].empty()){
-            string dataJson = listaJSON.dump();
+        if(!listaJSON["Nombre de la variable"].empty()){
+            if(!listaJSONRef["Nombre de la variable"].empty()){
+                string dataJson = listaJSON.dump();
+                string refJson = listaJSONRef.dump();
+                cout << "LISTA JSON: "<< dataJson << endl;
+                cout << "LISTA REF JSON: "<< refJson << endl;
+                dataJson += "+";
+                mLocalServer->envia(dataJson.c_str());
+                mLocalServer->envia(refJson.c_str());
+                cout<<"TextoCortado: " << textoCortado << endl;
+            }else{
+                string dataJson = listaJSON.dump();
+                cout << "LISTA JSON: "<< dataJson << endl;
+                mLocalServer->envia(dataJson.c_str());
+                cout<<"TextoCortado: " << textoCortado << endl;
+            }
+        }else if (!listaJSONRef["Nombre de la variable"].empty()){
             string refJson = listaJSONRef.dump();
-            cout << "LISTA JSON: "<< dataJson << endl;
             cout << "LISTA REF JSON: "<< refJson << endl;
-            dataJson += "+";
-            mLocalServer->envia(dataJson.c_str());
             mLocalServer->envia(refJson.c_str());
             cout<<"TextoCortado: " << textoCortado << endl;
         }else{
-            string dataJson = listaJSON.dump();
-            cout << "LISTA JSON: "<< dataJson << endl;
-            mLocalServer->envia(dataJson.c_str());
-            cout<<"TextoCortado: " << textoCortado << endl;
+            cout << "No hay nada que enviar" << endl;
         }
-    }else if (!listaJSONRef["Nombre de la variable"].empty()){
-        string refJson = listaJSONRef.dump();
-        cout << "LISTA REF JSON: "<< refJson << endl;
-        mLocalServer->envia(refJson.c_str());
-        cout<<"TextoCortado: " << textoCortado << endl;
-    }else{
-        cout << "No hay nada que enviar" << endl;
     }
+    else{
+        for(int i=0; i<sumaDebug; i++){
+            textoCortado = lines[i].toStdString();
+            if(lines[i].contains("reference<int>") || lines[i].contains("reference<long>")
+                    || lines[i].contains("reference<char>") || lines[i].contains("reference<float>")
+                    || lines[i].contains("reference<double>")){
+                printReference(textoCortado);
+            }else if(lines[i].contains("int") || lines[i].contains("long") || lines[i].contains("float") || lines[i].contains("double")){
+                printIntFloatMatches(textoCortado);
+            }else if(lines[i].contains("char")){
+                printCharMatches(textoCortado);
+            }
+            else{
+                cout << "NO SE PUDO 2" << endl;
+            }
+        }
+//        lines.clear();
+        if(!listaJSON["Nombre de la variable"].empty()){
+            if(!listaJSONRef["Nombre de la variable"].empty()){
+                string dataJson = listaJSON.dump();
+                string refJson = listaJSONRef.dump();
+                cout << "LISTA JSON: "<< dataJson << endl;
+                cout << "LISTA REF JSON: "<< refJson << endl;
+                dataJson += "+";
+                mLocalServer->envia(dataJson.c_str());
+                mLocalServer->envia(refJson.c_str());
+                cout<<"TextoCortado: " << textoCortado << endl;
+            }else{
+                string dataJson = listaJSON.dump();
+                cout << "LISTA JSON: "<< dataJson << endl;
+                mLocalServer->envia(dataJson.c_str());
+                cout<<"TextoCortado: " << textoCortado << endl;
+            }
+        }else if (!listaJSONRef["Nombre de la variable"].empty()){
+            string refJson = listaJSONRef.dump();
+            cout << "LISTA REF JSON: "<< refJson << endl;
+            mLocalServer->envia(refJson.c_str());
+            cout<<"TextoCortado: " << textoCortado << endl;
+        }else{
+            cout << "No hay nada que enviar 2" << endl;
+        }
+    }
+
 }
 
 ///printIntFloatMatches es una funcion que separa una linea de texto en ints o float
@@ -224,8 +272,12 @@ void MainWindow::printReference(string str){
         }
         else if(i == 3){
             regex_search(str,matches,numerosLetras);
-            cout<<matches.str(0) << endl;
-            str = matches.suffix().str();
+            if(matches.str(0) != "getValue"){
+                ui->aplicationLogConsole->append("Error de syntaxis");
+            }else{
+                cout<<"GET? "<<matches.str(0) << endl;
+                str = matches.suffix().str();
+            }
         }
         else{
             regex_search(str,matches,numerosLetras);
@@ -241,10 +293,24 @@ void MainWindow::printReference(string str){
 ///on_debugButton_clicked este boton de debug corre el codigo linea por linea
 ///Este boton va recorriendo el codigo linea por linea e identifica si hay algun tipo de error.
 void MainWindow::on_debugButton_clicked(){
-//    separarTexto();
-//    QJsonArray listaQJSON;
-//    listaQJSON["Valores"];
-//    cout << "LISTA JSON: " << listaQJSON << endl;
+    flag = true;
+    ui->tablaRAM->setRowCount(0);
+
+    if(ui->writeCode->toPlainText().contains("\n")){
+        lines = ui->writeCode->toPlainText().split("\n");
+    }
+    listaJSON["Direccion de Memoria"] = {};
+    listaJSON["Bytes del tipo de dato"] = {};
+    listaJSON["Nombre de la variable"] = {};
+    listaJSON["Valor de la variable"] = {};
+
+    listaJSONRef["Tipo de dato"] = {};
+    listaJSONRef["Nombre de la variable"] = {};
+    listaJSONRef["GetValue de la variable"] = {};
+    listaJSONRef["Direccion de Memoria"] = {};
+
+    separarTexto();
+    lines.clear();
 }
 
 void MainWindow::on_conectar_con_servidor_clicked()
@@ -266,4 +332,26 @@ void MainWindow::on_conectar_con_servidor_clicked()
             ui->tablaRAM->setItem(i, 2, new QTableWidgetItem(str3));
         }
     });
+}
+
+void MainWindow::on_botonDerecha_clicked(){
+    if(sumaDebug == ui->writeCode->toPlainText().count("\n")){
+        cout << "No se puede sumar" << endl;
+    }else{
+        sumaDebug ++;
+        cout << "TAMANO SUMADEBUG: " << sumaDebug << endl;
+    }
+}
+
+void MainWindow::on_botonIzquierda_clicked(){
+    if(sumaDebug == 0){
+        cout << "No se puede restar" << endl;
+    }else{
+        sumaDebug --;
+        cout << "TAMANO SUMADEBUG: " << sumaDebug << endl;
+    }
+}
+
+void MainWindow::on_stopButton_clicked(){
+    flag = false;
 }

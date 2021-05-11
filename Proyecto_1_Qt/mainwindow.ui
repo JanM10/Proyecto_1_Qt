@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1276</width>
-    <height>908</height>
+    <height>921</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>100</y>
       <width>51</width>
-      <height>491</height>
+      <height>481</height>
      </rect>
     </property>
     <property name="font">
@@ -43,9 +43,9 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>70</y>
+      <y>100</y>
       <width>721</width>
-      <height>491</height>
+      <height>481</height>
      </rect>
     </property>
     <property name="font">
@@ -135,7 +135,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>570</y>
+      <y>590</y>
       <width>791</width>
       <height>279</height>
      </rect>
@@ -321,6 +321,46 @@ p, li { white-space: pre-wrap; }
     <property name="text">
      <string>CONECTAR CON SERVIDOR</string>
     </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>50</y>
+      <width>195</width>
+      <height>47</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="botonIzquierda">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>&lt;---</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonDerecha">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>---&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

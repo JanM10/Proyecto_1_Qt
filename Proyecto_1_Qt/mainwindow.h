@@ -75,6 +75,12 @@ private slots:
 
     void on_conectar_con_servidor_clicked();
 
+    void on_botonDerecha_clicked();
+
+    void on_botonIzquierda_clicked();
+
+    void on_stopButton_clicked();
+
 private:
     json listaJSON;
     json listaJSONRef;
